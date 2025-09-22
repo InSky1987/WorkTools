@@ -7,5 +7,5 @@ if __name__ == "__main__":
     for i in range(0,99):
         numInput = input("请输入帧发送时间：");
         timeOutput = devide(float(numInput));
-        print("帧offset为：" + str(timeOutput));
+        print("帧offset为：" + str(timeOutput)+"\n");
    
