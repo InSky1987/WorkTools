@@ -1,0 +1,2252 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+   mstimer tickA;// 10ms
+   mstimer tickB;// 20ms
+   mstimer tickC;// 50ms
+   mstimer tickD;// 60ms
+   mstimer tickE;// 100ms
+   mstimer tickF;// 1000ms
+  
+   byte CounterA;
+   byte CounterP=0;
+   byte executing;
+   byte testcaseNum;
+   byte RelayS1,RelayS2;
+   byte EventEnableA,EventEnableB;
+   byte Item=0;
+   byte trigerCase;
+   byte tdelay=0;
+   byte sleepEn=0;
+   byte Counter1A;
+   byte CounterTmp=0;
+   byte CounterTmp2=0;
+   byte CounterTmp3=0;
+   byte CounterTmp4=0;
+   byte CounterEN=0;
+   byte CounterEN2=0;
+   byte CounterEN3=0;
+   byte CounterEN4=0;   
+   byte CounterI;
+   byte EventEnable;
+   byte c_test=0;
+   byte Sbit=0;
+   byte ksign=0;
+   byte EnCLR=0;
+   byte FIUEn=0;
+   byte Rtwice;
+   byte trigerSend;
+   byte Rdata[8];  
+   byte DIDresData[16];
+   byte EnMsg=0;
+   byte CounterC,CounterD,CounterE,CounterF,CounterG,CounterH,CounterK;
+   byte Counter3A,Counter3B,Counter3C,Counter3D,Counter3E,Counter3F;
+  
+   byte ActiveAbsentMkup=0;
+   byte ActiveAbsentPWT=0;
+   byte ActiveAbsentSpeed=0;
+   byte SACN=0;
+   byte checksumEN=0;
+   byte checksumEN2=0;
+   byte checksumEN3=0;
+   byte checksumEN4=0;
+   
+   byte MSGEN_A=0;
+   byte MSGEN_B=0;
+   byte MSGEN_C=0;
+   byte MSGEN_D=0;
+   byte MSGEN_E=0;
+   byte MSGEN_F=0;
+   byte MSGEN_G=0;
+   byte MSGEN_H=0;
+   byte MSGEN_I=0;
+   byte MSGEN_J=0;
+   byte MSGEN_K=0;
+   byte MSGEN_L=0;
+   byte MSGEN_M=0; 
+   byte MSGEN_N=0; 
+
+   byte CHKEN_A=0;
+   byte CHKEN_B=0;
+   byte CHKEN_C=0;
+   byte CHKEN_D=0;
+   byte CHKEN_E=0;
+   byte CHKEN_F=0;
+   byte CPTEN_A=0;
+   byte CPTEN_B=0;
+   byte CPTEN_C=0;
+   byte CPTEN_D=0;
+   byte CPTEN_E=0;
+   byte CPTEN_F=0;
+  
+   byte Chk211=0x04;
+   byte Chk241=0x07;
+   byte chk208=0x0A;
+   byte chk432=0x06;
+
+  
+   dword CounterB;// 4Byte
+   dword portN=6;
+   dword fileHandle;
+   dword detecttime=0;
+   dword healtime=0;
+   dword timdur=0;
+  
+   byte Tframe[8]={0x01,0x05,0x00,0x00,0xFF,0x00,0x00,0x00}; 
+  
+  
+   int inicondition=0;
+  
+   char strA[200];
+   char tResult[16]="Passed";  
+
+  
+  struct {
+    word DIDindex;
+    byte datalen;
+    byte respsendData[16];
+    byte writeData[16];
+    byte passCheck;
+   }t_DIDMtrix[200];
+  
+   byte ClearDTC14[5]={0x04,0x14,0xff,0xff,0xff};
+   byte ReadDTC02[4]={0x03,0x19,0x02,0x2F};
+  
+  
+  //CAN
+   message CAN1.IS_INTE_ELECTRON_BSI_092H Msg_092h;
+ 
+   //message CAN1.INV_217H Msg_217h;
+   message INV_217H Msg_217h;
+   //message CAN1.IS_DYN_VCU_208H Msg_208h;
+   message IS_DYN_VCU_HSN3_208H Msg_208h;
+   //message CAN1.VCU_4A2 Msg_4A2h;
+   message VCU_4A2 Msg_4A2h;
+   //message CAN1.VCU_5D1h Msg_5D1h;
+  
+   //message CAN1.VCU_5F1h Msg_5F1h;
+   
+   //message CAN1.VCU_211h Msg_211h;
+   message VCU_211H Msg_211h;
+   //message CAN1.VCU_241h Msg_241h;
+   message VCU_241H Msg_241h;
+   //message CAN1.VCU_262 Msg_262h;
+   message VCU_262 Msg_262h;
+   //message CAN1.VCU_421h Msg_421h;
+   message VCU_421H Msg_421h;
+   //message CAN1.VCU_AIRBAG_351h Msg_351h;
+   message VCU_AIRBAG_351H Msg_351h;
+   //message CAN1.BCM_432 Msg_432h;
+   message BCM_432H Msg_432h;
+   message CAN1.V2_BCM_552 Msg_552h;
+   //message CAN1.VCU_HVAC_231h Msg_231h;
+   
+  
+   //message CAN1.HVBAT_205h Msg_205h;
+   message HVBAT_205H Msg_205h;
+   //message CAN1.HVBAT_2A5h Msg_2A5h;
+   message HVBAT_2A5H Msg_2A5h;
+   //message CAN1.HVBAT_SUPV_795h Msg_795h;
+   message HVBAT_SUPV_795H Msg_795h;
+
+  
+   //message CAN1.DAT_E_VCU_422 Msg_422h;
+  
+   //message CAN1.VCU_5D1h Msg_5d1h;
+   
+   
+   //message CAN1.VCU_5F1h Msg_5f1h;
+   
+  
+   //message CAN1.RES_DIAG_ON_CAN_694h Msg_694h;
+   message RES_DIAG_ON_CAN_694H Msg_694h;
+   //message CAN1.REQ_DIAG_ON_CAN_6B4h Msg_6B4h;
+   message REQ_DIAG_ON_CAN_6B4H Msg_6B4h;
+   message CAN1.0x694 Msg_3E00h;
+  
+   //Debug CAN
+   //message CAN2.BMS_SEND15 Msg_1BEh;
+   //message CAN2.BMS_SEND11 Msg_1BAh;
+   message CAN2.BMS_Set1 Msg_3B0h;
+   message CAN2.BMS_Set2 Msg_3B1h;
+   message CAN2.BMS_Set6 Msg_3B5h;
+   message CAN2.BMS_Set7 Msg_3B6h;
+   message CAN2.BMS_Set8 Msg_3B7h;
+   message CAN2.BMS_Set9 Msg_3B8h;
+   message CAN2.BMS_Set10 Msg_3B9h;
+   message CAN2.BMS_Set12 Msg_3BBh;
+   message CAN2.BMS_Set17 Msg_3C2h;
+    
+   //message CAN1.REQ_DIAG_ON_CAN_6B4h Msg_REQ;
+   message REQ_DIAG_ON_CAN_6B4H Msg_REQ;
+   //message CAN1.RES_DIAG_ON_CAN_694h Msg_REP;
+   message RES_DIAG_ON_CAN_694H Msg_REP;
+
+  
+   char panelName[32]="bmsuf4";
+   char pName[32]="TestPANEL";
+   char ctrlName[32]="Abutton";
+
+}
+
+on start
+{
+  openPanel(panelName);
+  strncpy(strA," ",elCount(strA));  
+  sysSetVariableString(sysvar::BYD400BMS::mentionstring,strA);
+  fileHandle=openFileWrite("testresult_DIDa.txt",0);
+  /*
+  Msg_3E00h.dlc=0x03;
+  Msg_3E00h.byte(0)=0x02;
+  Msg_3E00h.byte(1)=0x3E;
+  Msg_3E00h.byte(2)=0x00;
+*/
+  
+  setTimerCyclic(tickA,10,10);
+  setTimerCyclic(tickB,20,20);
+  setTimerCyclic(tickC,50,50);
+  setTimerCyclic(tickD,10,10);//setTimerCyclic(tickD,60,60)
+  setTimerCyclic(tickE,100,100);
+  setTimerCyclic(tickF,1000,1000);
+  Dataini();
+  RelayS2=0;
+  RelayS1=0;
+  Rs232initial();
+  startlogfunction();
+  Item=0;
+  c_test=0;
+  Sbit=0;
+  ksign=0;
+  CounterP=0;
+  Item=@BYD400BMS::faultitem;
+  trigerCase=0xff;
+  inicondition=0;
+}
+
+
+on timer tickA//10ms
+{
+  if(CounterA<15)
+    CounterA=CounterA+1;
+  else
+    CounterA=0;
+  
+  if(checksumEN3==0)
+  {
+    if(CounterEN3==0)
+    {CounterTmp3=CounterA;}
+    else
+      CounterTmp3=0;
+       
+  CheckSumCalculation(Msg_208h,7,CounterTmp3,chk208);
+  }
+  
+  if(MSGEN_A==0)
+  //Msg_208h.VCU_PROCESS_COUNTER_208=2;
+  output(Msg_208h);
+
+  if(checksumEN2==0)
+  {
+  if(CounterEN2==0)
+  {
+    CounterTmp2=CounterA;
+  }
+  else
+    CounterTmp2=0;
+  
+  CheckSumCalculation(Msg_241h,7,CounterTmp2,Chk241);
+
+  }
+ 
+  if(ActiveAbsentSpeed==0 && MSGEN_B==0)
+    //Msg_241h.VCU_PROCESS_COUNTER_241=1;
+    //Msg_241h.VVH_INDISP=3;
+   output(Msg_241h);
+  
+  if(MSGEN_L==0)  
+   output(Msg_217h);
+  
+   //output(Msg_1BEh); 
+   //output(Msg_1BAh);
+
+  if(ActiveAbsentPWT==0 && MSGEN_G==0)
+   output(Msg_262h);
+  
+}
+
+on timer tickB//20ms
+{
+  if(CounterB<655350)
+    CounterB=CounterB+1;
+  else 
+    CounterB=0;
+  
+  output(Msg_421h);
+   //====update message by test case selection)
+ 
+  if(testcaseNum==0)
+  {
+     gotoready();
+  }
+  
+  if(testcaseNum==1)
+  {
+    gotosleep();  
+    
+  }
+  
+  if(testcaseNum==2)
+  {
+     gotowait();
+  }
+
+  if(testcaseNum==3)
+  {
+     gotoquickcharging();
+  } 
+
+  if(testcaseNum==4)
+  {
+     gotoslowcharging();
+  }
+  
+  if(testcaseNum==5)
+  {
+     gotodischarging();
+  }
+
+  if(testcaseNum==6)
+  {
+     gotoprecondition();
+  } 
+  
+  if(testcaseNum==7)
+  {
+     gotopreshutdown();
+  }
+
+  if(testcaseNum==8)
+  {
+     gotoabnormal();
+  } 
+
+  if(testcaseNum==9)
+  {
+     partialwakeup();
+  } 
+
+  if(testcaseNum==10)
+  {
+    //execmakefaultINV(); 
+    //execmakefaultforbid();
+    //execmakefaultCHKSUM();
+    //execmakefaultMISS();
+    autoclearDTC40WUC();
+  }
+
+ 
+  /*
+  if(testcaseNum==11)
+  {
+    //execmakefaultMISS();
+     //autoclearDTC40WUC();
+  }
+  
+  if(testcaseNum==12)
+  {
+     //ReadDID();
+  } 
+  
+  if(testcaseNum==13)
+  {
+     //WriteDID();
+  }
+*/
+ 
+  
+  if(testcaseNum==0xff)
+  {
+    ;   
+  }
+
+}
+
+on timer tickC//50ms
+{
+  
+
+  if(CounterH<15)
+    CounterH=CounterH+1;
+  else
+    CounterH=0;
+  
+  if (MSGEN_M==0)
+  {
+ 
+    if(CPTEN_F==0)
+      Counter3F=CounterH;
+    else
+      Counter3F=0;
+     
+    if(CHKEN_F==0)
+     CheckSumCalculation2(Msg_432h,2,0,1,0,Counter3F,chk432); 
+    else
+     CheckSumCalculation4(Msg_432h,2,0,1,0,Counter3F,chk432,0);  
+   
+
+  //output(Msg_432h); 
+  }
+  
+  if( MSGEN_C==0)
+  {
+    output(Msg_432h); 
+    output(Msg_421h);
+  }
+  
+  //send_5D1_5F1();
+}
+
+/*void send_5D1_5F1()
+{
+  if(CounterI<10)
+  {
+    output(Msg_5D1h);
+    output(Msg_5F1h);
+    CounterI=CounterI+1;
+  }  
+}*/
+
+on timer tickD//60ms
+{  
+  if(MSGEN_D==0)
+  output(Msg_351h);
+}
+
+on timer tickE//100ms
+{
+ if(CounterE<15)
+  CounterE=CounterE+1;
+ else
+  CounterE=0;
+  
+ if(checksumEN==0)
+{
+  if(CounterEN==0)
+  {CounterTmp=CounterE;
+  }
+  else
+    CounterTmp=0x0;
+ CheckSumCalculation(Msg_211h,7,CounterTmp,Chk211);
+}
+
+ if(MSGEN_E==0)
+  //Msg_211h.VCU_PROCESS_COUNTER_211=1;
+  //Msg_211h.VCU_STATE_COMMAND=7;
+ output(Msg_211h); 
+
+ if(ActiveAbsentPWT==0 && MSGEN_H==0)
+  output(Msg_4A2h); 
+
+ if(MSGEN_F==0)
+ //output(Msg_231h);
+  
+  
+ //output(Msg_422h);
+ //====================// 
+ if(EventEnable==1)
+ {
+  if(CounterG<15)
+   CounterG=CounterG+1;
+  else
+   CounterG=0;
+  if((CounterG<4)&&(CounterG>0))
+   output(Msg_092h); 
+  if(CounterG>=4)
+  { EventEnable=0;
+   CounterG=0;
+  }
+  }
+}
+
+on timer tickF//1000ms
+{
+   
+  if(Counter1A<200)
+    Counter1A=Counter1A+1;
+  else
+    Counter1A=0;
+  
+  if(MSGEN_N==0)
+  output(Msg_552h);
+  
+  //DEBUG CAN
+  output(Msg_3B0h);//BMS_set1
+  output(Msg_3B1h);//BMS_set2
+  output(Msg_3B5h);//BMS_set6
+  output(Msg_3B6h);//BMS_set7
+  output(Msg_3B7h);//BMS_set8
+  output(Msg_3B8h);//BMS_set9
+  output(Msg_3B9h);//BMS_set10
+  output(Msg_3BBh);//BMS_set12
+  output(Msg_3C2h);//BMS_set17
+
+  
+  /* 
+  if(trigerCase==0)
+  {
+   executing=0;
+  }
+
+  if(trigerCase==1)
+  { 
+     DSC001check();
+  }
+  
+  if(trigerCase==2)
+  {
+     DSC002check();
+  }
+  
+  if(trigerCase==3)
+  { 
+     DSC003check();
+  }
+ 
+  if(trigerCase==4)
+  {  
+    write("SACN lalala %d",SACN);
+    SACN1check();  
+  }
+ 
+  if(trigerCase==5)
+  {
+     DSC050check(); 
+  }
+  
+  if(trigerCase==6)
+  {
+     DSCcheck();
+  }
+  
+  if(trigerCase==7)
+  {
+     DSC1check();
+  }
+
+  if(trigerCase==8)
+  {
+   write("SACN lalala %d",SACN);
+   SACN3check();
+  }
+  
+  if(trigerCase==9)
+  {
+   write("SACN lalala %d",SACN);
+   SACN3NOTcheck();
+  }
+   
+  if(trigerCase==10)
+  {
+    // write("SACN lalala %d",SACN);
+   DSC2check();
+  }
+  
+ if(trigerCase==32)
+  {
+    if(Counter1A==1)
+      SACinitial();
+      trigerCase=0; 
+      executing=0;
+  }*/
+}
+
+on key 'A'
+{
+      Msg_REQ.dlc=0x03;
+      Msg_REQ.byte(0)=0x02;
+      Msg_REQ.byte(1)=0x10;
+      Msg_REQ.byte(2)=0x01;
+      output(Msg_REQ);
+}
+
+on key 'B'
+{
+      Msg_REQ.dlc=0x03;
+      Msg_REQ.byte(0)=0x02;
+      Msg_REQ.byte(1)=0x10;
+      Msg_REQ.byte(2)=0x03;
+      output(Msg_REQ);
+}
+
+on key 'C'
+{
+      Msg_REQ.dlc=0x04;
+      Msg_REQ.byte(0)=0x03;
+      Msg_REQ.byte(1)=0x22;
+      Msg_REQ.byte(2)=0xF1;
+      Msg_REQ.byte(3)=0x86;
+      output(Msg_REQ);
+}
+
+on key 'Q'
+{
+  //???Crash
+  Msg_351h.CRASH_AIRBAG=0;
+
+}
+
+on key 'W'
+{
+  //???Crash
+  Msg_351h.CRASH_AIRBAG=1;
+
+}
+on key 'E'
+{
+  //???Crash
+  Msg_351h.CRASH_AIRBAG=2;
+
+}
+on key 'R'
+{
+  //???Crash
+  Msg_351h.CRASH_AIRBAG=3;
+
+}
+on key 'T'
+{
+  //??Crash
+  Msg_351h.CRASH_AIRBAG=4;
+
+}
+
+on key 'Y'
+{
+  //??Crash
+  Msg_351h.CRASH_AIRBAG=5;
+
+}
+on key 'U'
+{
+  //???Crash
+  Msg_351h.CRASH_AIRBAG=6;
+
+}
+on key 'I'
+{
+  //???Crash
+  Msg_351h.CRASH_AIRBAG=7;
+
+}
+
+
+on key 'F'
+{
+   //Msg_422h.SYNCHRO_DC_GLOBAL=0;   
+  //Msg_208h.DIAG_MUX_ON_PWT=1;
+  //Msg_211h.VCU_CHKSUM_211=0;
+  //Msg_208h.VCU_PROCESS_COUNTER_208=1;
+  //Msg_552h.KILOMETRAGE=0xffffff;
+  //Msg_432h.REVEIL_PRINCIPAL=3;
+  //Msg_208h.VCU_MODE_EPS_REQUEST=7;
+  //Msg_208h.VCU_PROCESS_COUNTER_208=2;
+  //Msg_241h.VITESSE_VEHICULE_ROUES=0x05DC;//15
+  //Msg_432h.REVEIL_PRINCIPAL=0;
+  
+   //Msg_552h.CPT_TEMPOREL=0x1112;//100
+   //Msg_552h.KILOMETRAGE=0x64;
+   //Msg_552h.COMPTEUR_RAZ_GCT=5;
+  
+  MSGEN_A=1;
+  MSGEN_D=1;
+  MSGEN_I=1;
+  MSGEN_C=1;
+}
+
+
+
+void gotosleep()
+{ 
+    if(CounterB==2)
+    {
+     SleepCommand();
+     //DAT_E_VCU_422.SYNCHRO_DC_GLOBAL=0;
+     Msg_211h.VCU_SYNCHRO_GPC=0;
+     SetRcdlowlevel();
+    }
+    
+    if(CounterB==480)
+     { 
+      PowerOFF();
+     }
+    
+    if(CounterB==482)
+    {
+      testcaseNum=0xff;
+      CounterB=0;
+      executing=0;
+    }
+}
+
+void gotowait()   
+{
+ 
+  if(CounterB==10)
+  {
+  //initial condition// 
+   Msg_432h.REVEIL_PRINCIPAL=1;
+  /* No main wake up request
+  00 : Invalid RCD
+  01 : No main wake up request
+  10 : Main wake up request
+  11 : Not valid*/
+   Msg_432h.PRECOND_ELEC_WAKEUP=0;//no wakeup
+   Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+   //Msg_432h.eBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.EBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.BCM_LONG_PARK_WAKEUP=0;
+  
+  
+   Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;//0:No Wakeup 1:Wake up Request
+   Msg_421h.PI_STATE_INFO_WAKEUP=0;
+   Msg_421h.POST_OPERATION_WAKEUP=0;
+ 
+    /* 
+000: No Command
+001: DISCHARGE
+010: CHARGE
+011: PRE-HEAT
+100: Reserve
+101: Ready
+110: HVBAT Precondition
+111: Invalid
+   */  
+   Msg_211h.VCU_STATE_COMMAND=0;
+  
+ /* 
+0: No emergency shutdown request
+1: Emergency shutdown request
+*/
+   Msg_241h.VCU_EMERGENCY_SHUTDOWN=0;//0: No emergency shutdown request 1: Emergency shutdown request
+   Msg_241h.VITESSE_VEHICULE_ROUES=0;//speed=0
+    
+   //Msg_351h.CRASH_AIRBAG=5;
+    
+  
+   }
+  
+   if(CounterB==12)
+    { 
+      PowerON();
+    }
+    
+    if(CounterB==14)
+    {
+      SetRcdhighlevel();
+    }
+  
+  if(CounterB==20)
+  {
+  testcaseNum=0xff;
+  CounterB=0;
+  executing=0;
+  }
+  
+}
+
+void gotoready()
+{ 
+ 
+   if(CounterB==1)
+    {
+   //initial condition// 
+   Msg_432h.REVEIL_PRINCIPAL=2;
+  /* No main wake up request
+  00 : Invalid RCD
+  01 : No main wake up request
+  10 : Main wake up request
+  11 : Not valid*/
+
+   //Partial Wakeup
+   Msg_432h.PRECOND_ELEC_WAKEUP=0;//0:No Wakeup 1:Wake up Request
+   Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+   //Msg_432h.eBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.EBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.BCM_LONG_PARK_WAKEUP=0;
+  
+   Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;
+   Msg_421h.PI_STATE_INFO_WAKEUP=0;
+   Msg_421h.POST_OPERATION_WAKEUP=0;
+   Msg_208h.DIAG_MUX_ON_PWT=0;
+  
+  
+   //Msg_211h.VCU_STATE_COMMAND=5;// ready
+    /* 
+000: No Command
+001: DISCHARGE
+010: CHARGE
+011: PRE-HEAT
+100: Reserve
+101: Ready
+110: HVBAT Precondition
+111: Invalid
+   */ 
+
+   Msg_211h.VCU_HVBAT_CONTACTOR_OPEN_REQUEST=0;//0- Not requested 1.-Requested
+   
+   Msg_241h.VCU_EMERGENCY_SHUTDOWN=0;//0: No emergency shutdown request 1: Emergency shutdown request
+   Msg_241h.VITESSE_VEHICULE_ROUES=0;//0x05DC
+      
+   Msg_211h.VCU_STATE_COMMAND=5;
+      
+
+     /*
+//Debug CAN set
+//BMS_Set1 0x3B0
+      Msg_3B0h.Set_ISO_ISOSwitchCtrl=1;
+      Msg_3B0h.Set_ISO_ISOSwitchCtrl2=1;
+      Msg_3B0h.Set_ISO_SwitchCtrlEn=0;//
+      Msg_3B0h.Set_RLY_GPIO1DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIO2DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIO3DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIO4DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIO5DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIO6DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIOCtrlEn=0;
+      Msg_3B0h.Set_RLY_NegCtrlCmd=0;
+      Msg_3B0h.Set_RLY_PosCtrlCmd=0;
+      Msg_3B0h.Set_RLY_PreCtrlCmd=0;
+      Msg_3B0h.Set_RLY_DCNegCtrlCmd=0;
+      Msg_3B0h.Set_RLY_DCPosCtrlCmd=0;
+      Msg_3B0h.Set_RLY_RLYCtrlEn=0;
+      Msg_3B0h.Set_ClearDTC=2;//0=Disable 1=Enable 2=SNA
+      Msg_3B0h.Set_pack_resEn=1;//Enable
+      Msg_3B0h.Set_pack_res=0x3e8;//
+      Msg_3B0h.Set_IsoStartEn=1;
+      Msg_3B0h.Set_ClearPosLifeCycle=0;
+      Msg_3B0h.Set_ClearPreLifeCycle=0;
+      Msg_3B0h.Set_ClearNegLifeCycle=0;
+      Msg_3B0h.Set_ClearDCPosLifeCycle=0;
+      Msg_3B0h.Set_ClearDCNegLifeCycle=0;
+      Msg_3B0h.Set_SleepCmdEn=0;
+      Msg_3B0h.Set_SleepCmd=0;
+//BMS_Set2 0x3B1
+      Msg_3B1h.SetSOCIndex=0;
+      Msg_3B1h.SetSOCEn=1;
+      Msg_3B1h.SetSOC=0x80;
+      Msg_3B1h.SetSOCHIndex=0;
+      Msg_3B1h.SetSOHCEn=1;
+      Msg_3B1h.SetSOHC=0;
+//BMS_Set6 0x3B5
+      Msg_3B5h.Set_HallCurrEn=1;
+      Msg_3B5h.Set_HallCurr=0x3A98;
+      Msg_3B5h.Set_CSMCurrEn=1;
+      Msg_3B5h.Set_CSMCurr=0x3A98;
+//BMS_Set7 0x3B6
+      Msg_3B6h.Set_CellVoltIndex=0xFE;
+      Msg_3B6h.Set_CellVoltEn=1;
+      Msg_3B6h.Set_CellVolt=0xC80;
+      Msg_3B6h.Set_CellTempIndex=0xFE;//0xFE
+      Msg_3B6h.Set_CellTempEn=1;
+      Msg_3B6h.Set_CellTemp=0x2EE;//0x2EE
+//BMS_Set8 0x3B7
+      Msg_3B7h.Set_HVSU_VoltPack=0xE74;
+      Msg_3B7h.Set_HVSU_VLink=0xE74;
+      Msg_3B7h.Set_HVSU_MainFuseVolt=0xE74;
+      Msg_3B7h.Set_HVSU_VDCLink=0xE74;//0xE74
+//BMS_Set9 0x3B8
+      Msg_3B8h.Set_HVSU_VLinkNeg=0;
+      Msg_3B8h.Set_HVSU_VDCLinkNeg=0;
+      Msg_3B8h.Set_HVSU_VoltPackEn=1;
+      Msg_3B8h.Set_HVSU_VLinkEn=1;
+      Msg_3B8h.Set_HVSU_MainFuseVoltEn=1;
+      Msg_3B8h.Set_HVSU_VDCLinkEn=1;
+      Msg_3B8h.Set_HVSU_VLinkNegEn=1;
+      Msg_3B8h.Set_HVSU_VDCLinkNegEn=1;
+      Msg_3B8h.Set_Eservice_VoltEn=1;
+      Msg_3B8h.Set_RCDVoltEn=1;
+      Msg_3B8h.Set_KL30VoltEn=1;
+      Msg_3B8h.Set_ISOMesVoltEn=0;
+      Msg_3B8h.Set_VoltFactorEn=0;
+      Msg_3B8h.Set_VoltFactor=0;
+//BMS_Set10 0x3B9
+      Msg_3B9h.Set_Eservice_Volt=0x2710;
+      Msg_3B9h.Set_RCDVolt=0x2710;
+      Msg_3B9h.Set_KL30Volt=0x2710;
+      Msg_3B9h.Set_ISOMesVolt=0x2710; 
+   //Msg_3B7h.Set_HVSU_VLink=0xE74;
+   //Msg_3B7h.Set_HVSU_VDCLink=0xE74;//0xE74     
+ 
+      
+//Power CAN set
+//frame 0x5F1  
+      Msg_5f1h.VCU_BIN_Serial_Number_1=0; 
+      Msg_5f1h.VCU_BIN_Serial_Number_2=0; 
+      Msg_5f1h.VCU_BIN_Serial_Number_3=0; 
+      Msg_5f1h.VCU_BIN_Serial_Number_4=0; 
+      Msg_5f1h.VCU_BIN_Serial_Number_5=0; 
+      Msg_5f1h.VCU_BIN_Serial_Number_6=0; 
+      Msg_5f1h.VCU_BIN_Serial_Number_7=0;
+//frame 0x5D1
+      Msg_5D1h.VCU_BIN_Organ_Nature_1=0;
+      Msg_5D1h.VCU_BIN_Organ_Nature_2=0;
+      Msg_5D1h.VCU_BIN_Organ_Reference_1=0;
+      Msg_5D1h.VCU_BIN_Organ_Reference_2=0;
+      Msg_5D1h.VCU_BIN_Organ_Reference_3=0;
+      Msg_5D1h.VCU_BIN_Organ_Reference_4=0;    
+*/   
+      
+      
+   }
+    
+   if(CounterB==3)
+   { 
+     PowerON();
+     EventEnableA=1;
+   }
+  
+    
+   if(CounterB==200)
+   {
+     SetRcdhighlevel();
+   }
+  
+   if(CounterB==223)
+   {
+    //DAT_E_VCU_422.SYNCHRO_DC_GLOBAL=0;
+    Msg_211h.VCU_SYNCHRO_GPC=1;
+    testcaseNum=0xff;
+    CounterB=0;
+    executing=0;
+   }
+  
+  
+}
+
+void gotoquickcharging()
+{ 
+  //initial condition// 
+   Msg_432h.REVEIL_PRINCIPAL=2;
+  /* No main wake up request
+  00 : Invalid RCD
+  01 : No main wake up request
+  10 : Main wake up request
+  11 : Not valid*/
+   Msg_432h.PRECOND_ELEC_WAKEUP=0;//no partial wakeup
+   Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+   //Msg_432h.eBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.EBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.BCM_LONG_PARK_WAKEUP=0;
+  
+   Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;
+   Msg_421h.PI_STATE_INFO_WAKEUP=0;
+   Msg_421h.POST_OPERATION_WAKEUP=0; 
+  
+   Msg_3B7h.Set_HVSU_VLink=0xE74;// LINK voltage  370V
+   Msg_3B7h.Set_HVSU_VDCLink=0xE74; //DC LINK voltage 370V
+   Msg_3B8h.Set_HVSU_VLinkEn=1;
+   Msg_3B8h.Set_HVSU_VDCLinkEn=1;
+ 
+   Msg_211h.VCU_STATE_COMMAND =2;//CHARGE
+   Msg_4A2h.OBC_PLUG_STATE=0;
+    /* 
+000: No Command
+001: DISCHARGE
+010: CHARGE
+011: PRE-HEAT
+100: Reserve
+101: Ready
+110: HVBAT Precondition
+111: Invalid
+   */ 
+
+  Msg_211h.VCU_CHARG_TYPE=1; 
+/*  
+0 =Lent (AC) II SLOW (AC)
+1 =Rapide (DC) II QUICK (DC)
+2 =Pas de charge II No charging
+3 =Reserve II Reserved
+4 =Reserve II Reserved
+5 =Reserve II Reserved
+6 =Reserve II Reserved
+7 =Reserve II Reserved
+*/ 
+  
+   Msg_211h.VCU_QC_CONTACTOR_REQUEST=1;
+  
+   Msg_211h.VCU_HVBAT_CONTACTOR_OPEN_REQUEST=0;//0- Not requested 1- Requested
+   
+   Msg_241h.VCU_EMERGENCY_SHUTDOWN=0;//0: No emergency shutdown request 1: Emergency shutdown request
+   Msg_241h.VITESSE_VEHICULE_ROUES=0;//speed=0
+
+   testcaseNum=0xff;
+   CounterB=0;
+   executing=0;
+}
+
+void gotoslowcharging()
+{ 
+  //initial condition// 
+   Msg_432h.REVEIL_PRINCIPAL=2;
+  /* No main wake up request
+  00 : Invalid RCD
+  01 : No main wake up request
+  10 : Main wake up request
+  11 : Not valid*/
+   Msg_432h.PRECOND_ELEC_WAKEUP=0;//no partial wakeup
+   Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+   //Msg_432h.eBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.EBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.BCM_LONG_PARK_WAKEUP=0;
+  
+   Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;
+   Msg_421h.PI_STATE_INFO_WAKEUP=0;
+   Msg_421h.POST_OPERATION_WAKEUP=0;
+    
+   Msg_3B7h.Set_HVSU_VLink=0xE74;
+   //Msg_3B7h.Set_HVSU_VDCLink=0xE74;//0xE7
+   Msg_3B8h.Set_HVSU_VLinkEn=1;
+   //Msg_3B8h.Set_HVSU_VDCLinkEn=1;
+  
+   Msg_4A2h.OBC_PLUG_STATE=0;
+   Msg_211h.VCU_STATE_COMMAND =2;//CHARGE
+    /* 
+000: No Command
+001: DISCHARGE
+010: CHARGE
+011: PRE-HEAT
+100: Reserve
+101: Ready
+110: HVBAT Precondition
+111: Invalid
+   */ 
+
+  Msg_211h.VCU_CHARG_TYPE=0;
+/*  
+0 =Lent (AC) II SLOW (AC)
+1 =Rapide (DC) II QUICK (DC)
+2 =Pas de charge II No charging
+3 =Reserve II Reserved
+4 =Reserve II Reserved
+5 =Reserve II Reserved
+6 =Reserve II Reserved
+7 =Reserve II Reserved
+*/
+  
+   Msg_211h.VCU_HVBAT_CONTACTOR_OPEN_REQUEST=0;//0- Not requested 1- Requested
+   
+   Msg_241h.VCU_EMERGENCY_SHUTDOWN=0;//0: No emergency shutdown request 1: Emergency shutdown request
+   Msg_241h.VITESSE_VEHICULE_ROUES=0;//speed=0
+  
+   testcaseNum=0xff;
+   CounterB=0;
+   executing=0;
+}
+
+void gotodischarging()
+{ 
+  //initial condition// 
+   Msg_432h.REVEIL_PRINCIPAL=2;
+  /* No main wake up request
+  00 : Invalid RCD
+  01 : No main wake up request
+  10 : Main wake up request
+  11 : Not valid*/
+   Msg_432h.PRECOND_ELEC_WAKEUP=0;//no wakeup
+   Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+   //Msg_432h.eBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.EBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.BCM_LONG_PARK_WAKEUP=0;
+  
+   Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;
+   Msg_421h.PI_STATE_INFO_WAKEUP=0;
+   Msg_421h.POST_OPERATION_WAKEUP=0;
+    
+   Msg_211h.VCU_HVBAT_CONTACTOR_OPEN_REQUEST=0;//0- Not requested 1.-Requested 
+   Msg_241h.VCU_EMERGENCY_SHUTDOWN=0;//0: No emergency shutdown request 1: Emergency shutdown request
+   Msg_241h.VITESSE_VEHICULE_ROUES=0;//speed=0
+  
+   Msg_211h.VCU_STATE_COMMAND=1;// DISCHARGE
+  /*
+000: No Command
+001: DISCHARGE
+010: CHARGE
+011: PRE-HEAT
+100: Reserve
+101: Ready
+110: HVBAT Precondition
+111: Invalid
+  */
+  
+   Msg_3B7h.Set_HVSU_VLink=0xE74;
+   //Msg_3B7h.Set_HVSU_VDCLink=0xE74;//0xE74
+   Msg_3B8h.Set_HVSU_VLinkEn=1;
+   //Msg_3B8h.Set_HVSU_VDCLinkEn=1;
+
+   //Msg_4A2h.OBC_PLUG_STATE=1;
+  
+   testcaseNum=0xff;
+   CounterB=0;
+   executing=0;
+}
+
+void gotoprecondition()
+{ 
+   if(CounterB==2)
+  {
+   //Msg_5B5h.HVBAT_THERMAL_CONTROL=2;
+   Msg_211h.VCU_CHARG_TYPE=0;//0 =Lent (AC) II SLOW (AC)
+   Msg_211h.VCU_STATE_COMMAND=6;// HVBAT Precondition
+   //HVBAT_325h.HVBAT_TEMPERATURE=55+40;
+  /*
+000: No Command
+001: DISCHARGE
+010: CHARGE
+011: PRE-HEAT
+100: Reserve
+101: Ready
+110: HVBAT Precondition
+111: Invalid
+  */
+   Msg_211h.VCU_HVBAT_CONTACTOR_OPEN_REQUEST=0;//0- Not requested 1.-Requested
+    
+   //HVBAT_VCU_583.HV_BATT_NB_PROBE_TEMP_MAX = 56;
+   //HVBAT_VCU_583.HV_BATT_NB_PROBE_TEMP_MIN = -21;
+    
+    Msg_4A2h.OBC_PLUG_STATE=0;
+    
+      Msg_3B6h.Set_CellTempIndex=0x02;//0xFE
+      Msg_3B6h.Set_CellTempEn=1;
+      Msg_3B6h.Set_CellTemp=0x432;//0x2EE  0x3F5
+    
+   Msg_241h.VCU_EMERGENCY_SHUTDOWN=0;//0: No emergency shutdown request 1: Emergency shutdown request
+   Msg_241h.VITESSE_VEHICULE_ROUES=0;//speed=0
+  }
+
+  if(CounterB==6)
+  {
+    testcaseNum=0xff;
+    CounterB=0;
+    executing=0;
+  }
+}
+
+void gotopreshutdown()
+{ 
+  if(CounterB==2)
+  {
+ 
+   Msg_432h.REVEIL_PRINCIPAL=1;
+  /* No main wake up request
+  00 : Invalid RCD
+  01 : No main wake up request
+  10 : Main wake up request
+  11 : Not valid*/
+    
+   Msg_432h.PRECOND_ELEC_WAKEUP=0;//no wakeup
+   Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+   Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;
+   Msg_421h.PI_STATE_INFO_WAKEUP=0;
+   Msg_421h.POST_OPERATION_WAKEUP=0;
+   Msg_241h.VITESSE_VEHICULE_ROUES=0;
+    
+   Msg_211h.VCU_HVBAT_CONTACTOR_OPEN_REQUEST=1;//request 
+   Msg_211h.VCU_QC_CONTACTOR_REQUEST=0;//open
+  }
+
+  if(CounterB==27)
+  {
+   //Msg_3B7h.Set_HVSU_VoltPack=0;//set pack+ voltage to 0
+   Msg_3B7h.Set_HVSU_VLink=0;//set link+ voltage to 0
+   Msg_3B7h.Set_HVSU_VDCLink=0;//set QC + voltage to 0
+   //Msg_3B8h.Set_HVSU_VoltPackEn=1;
+   Msg_3B8h.Set_HVSU_VLinkEn=1;
+   Msg_3B8h.Set_HVSU_VDCLinkEn=1;
+  }
+  
+  if(CounterB==29)
+  {
+   testcaseNum=0xff;
+   CounterB=0;
+   executing=0;
+  }
+  
+}
+
+void gotoabnormal()
+{ 
+  if(CounterB==2)
+  {
+  //initial condition// 
+   Msg_432h.REVEIL_PRINCIPAL=0;
+  /* No main wake up request
+  00 : Invalid RCD
+  01 : No main wake up request
+  10 : Main wake up request
+  11 : Not valid*/
+   //Msg_432h.PRECOND_ELEC_WAKEUP=0;//no wakeup
+   //Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+  
+   //Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;
+   //Msg_421h.PI_STATE_INFO_WAKEUP=0;
+   //Msg_421h.POST_OPERATION_WAKEUP=0;
+  
+   //Msg_241h.VITESSE_VEHICULE_ROUES=0;
+  
+   // Msg_241h.VCU_EMERGENCY_SHUTDOWN=1;//0: No emergency shutdown request 1: Emergency shutdown request
+   
+    
+      //Msg_3B6h.Set_CellTemp=0x41A;//55
+      //Msg_3B6h.Set_CellTemp=0x122;//-21
+      //Msg_3B6h.Set_CellTemp=0xBE;//-31
+        
+      //Msg_3B6h.Set_CellTemp=0x2EE;//25
+      //Msg_211h.VCU_STATE_COMMAND =2;//CHARGE
+
+      //Msg_211h.VCU_CHARG_TYPE=1;
+    
+      //Msg_3B0h.Set_RLY_PreCtrlCmd=1;
+      //Msg_3B0h.Set_RLY_NegCtrlCmd=1;
+      //Msg_3B0h.Set_RLY_PosCtrlCmd=1;
+    
+      //Msg_3B0h.Set_pack_resEn=1;//disable
+    
+      //Msg_3B0h.Set_RLY_DCNegCtrlCmd=2;
+      //Msg_3B0h.Set_RLY_DCPosCtrlCmd=2;
+    
+      //Msg_3B7h.Set_HVSU_VDCLink=0;//0
+    
+    
+      //Msg_3B0h.Set_ISO_SwitchCtrlEn=0;//
+    
+    
+      //Msg_3B9h.Set_RCDVolt=0x960;
+      //Msg_3B8h.Set_RCDVoltEn=1;
+      //Msg_3B6h.Set_CellVoltIndex=0xFF;
+      //Msg_3B6h.Set_CellVoltEn=1;
+      //Msg_3B6h.Set_CellVolt=0xCE4;//3300
+      //Msg_3B7h.Set_HVSU_VoltPack=0xBB8;//300
+      //Msg_432h.PRECOND_ELEC_WAKEUP=1;
+      //Msg_432h.BCM_LONG_PARK_WAKEUP=1;
+    
+    testcaseNum=0xff;
+    CounterB=0;
+    executing=0;
+  }
+
+}
+
+void execmakefaultMISS()
+{
+   if(CounterB==8)
+   {
+     pushinmsg(Msg_REQ,ClearDTC14);
+      output(Msg_REQ);
+   }
+  
+   if(CounterB==15)
+   {
+      pushinmsg(Msg_REQ,ReadDTC02);
+      output(Msg_REQ);
+   }
+   if(CounterB==16)
+    {
+      Msg_REQ.dlc=0x03;
+      Msg_REQ.byte(0)=0x30;
+      Msg_REQ.byte(1)=0x0;
+      Msg_REQ.byte(2)=0x0;
+      output(Msg_REQ);
+    }
+  
+  
+   if(CounterB==20)
+   {
+     switch (Item)
+    {
+      case 0:
+          MSGEN_A=1; //208
+            detecttime=5000;
+            healtime=1100;
+           Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+      case 1:           
+          MSGEN_B=1;//241
+           detecttime=1200;
+            healtime=240; 
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+      case 2:     
+          MSGEN_C=1;//421
+            detecttime=600;
+            healtime=2100; 
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+      case 3:
+          MSGEN_D=1;//351
+            detecttime=140;
+            healtime=240; 
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+      case 4:
+            write("211");
+            MSGEN_E=1;//211
+            detecttime=5000;
+            healtime=2500; 
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+      case 5:
+           MSGEN_F=1;//231
+            detecttime=1200;
+            healtime=2200; 
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+
+      case 6:
+          MSGEN_G=1;//262
+         detecttime=140;
+            healtime=240;
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+        
+      case 7:
+           MSGEN_H=1;//4A2
+         detecttime=1200;
+            healtime=2200;
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+          
+       case 8:
+          MSGEN_I=1;//208
+           detecttime=2000;
+            healtime=1000;
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;  
+           
+        case 9:
+           MSGEN_J=1;//335
+           detecttime=1200;
+            healtime=2200;
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;   
+         
+        case 10:
+           MSGEN_K=1;//455
+          detecttime=1200;
+            healtime=2200;
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;  
+        
+         case 11:
+          MSGEN_L=1;//217
+          detecttime=1000;//1000
+            healtime=80;
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+        
+        case 12:
+          MSGEN_M=1;//432
+            detecttime=900;//850
+            healtime=250;
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+          
+        case 13:
+          MSGEN_N=1;//552
+            detecttime=900;//850
+            healtime=250;
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+        
+      default:
+        break;
+      
+    }
+    
+     strncpy(strA,"fault generated OK",elCount(strA));
+     sysSetVariableString(sysvar::BYD400BMS::mentionstring,strA);
+ 
+  }
+  
+ 
+  if(CounterB==(detecttime/20+20))
+  {
+   
+      switch (Item)
+      {
+      case 0:
+          MSGEN_A=0;
+           Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+      case 1:
+         MSGEN_B=0;
+         Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+      case 2:  
+         MSGEN_C=0;
+        Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+        
+      case 3:
+         MSGEN_D=0;
+        Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;   
+        
+      case 4:
+         MSGEN_E=0;
+         Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break; 
+    
+      case 5:
+           MSGEN_F=0;//no use
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+
+      case 6:
+          MSGEN_G=0;//262
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+        
+      case 7:
+           MSGEN_H=0;//4A2
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;
+          
+       case 8:
+           MSGEN_I=0;//208
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;  
+              
+       case 9:
+          MSGEN_J=0;//335
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;           
+       
+       case 10:
+          MSGEN_K=0;//455
+          timdur=1200;
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;       
+      
+       case 11:
+          MSGEN_L=0;//217
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break;        
+              
+        case 12:
+          MSGEN_M=0;//432  
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break; 
+          
+        case 13:
+          MSGEN_M=0;//552  
+          Msg_208h.DIAG_MUX_ON_PWT=0x1;
+         break; 
+          
+      default:
+       
+        break;
+      
+      }
+  
+  }
+ 
+   if(CounterB==((detecttime+healtime)/20+20))
+   {
+     pushinmsg(Msg_REQ,ReadDTC02);
+      output(Msg_REQ);
+   }
+   if(CounterB==((detecttime+healtime)/20+22))
+    {
+      Msg_REQ.dlc=0x03;
+      Msg_REQ.byte(0)=0x30;
+      Msg_REQ.byte(1)=0x0;
+      Msg_REQ.byte(2)=0x0;
+      output(Msg_REQ);
+    }
+  
+   if(CounterB==((detecttime+healtime)/20+62))
+   {  
+        strncpy(strA,"fault disappeared ",elCount(strA)); 
+        strncat(strA,tResult,50);    
+        sysSetVariableString(sysvar::BYD400BMS::mentionstring,strA);
+        testcaseNum=0xff;
+        executing=0;
+        CounterB=0;
+        Item=0;
+     } 
+
+}
+
+void partialwakeup()
+{ 
+  if(CounterB==220) 
+  {
+  //initial condition// 
+   Msg_432h.REVEIL_PRINCIPAL=1;
+  /* No main wake up request
+  00 : Invalid RCD
+  01 : No main wake up request
+  10 : Main wake up request
+  11 : Not valid*/
+    
+    
+   /*
+   Msg_432h.PRECOND_ELEC_WAKEUP=0;//no wakeup
+   Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+   //Msg_432h.eBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.EBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   
+   //trigger the 265 frame
+   Msg_432h.BCM_LONG_PARK_WAKEUP=1;
+   Msg_432h.BCM_PRK_COOLING_WAKEUP=0;
+   //Msg_432h.eBCCM_REM_UNLOCK_WAKEUP=0;
+   Msg_432h.EBCCM_REM_UNLOCK_WAKEUP=0;
+  
+   Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;
+   Msg_421h.PI_STATE_INFO_WAKEUP=0;
+   //if don't need to trigger 265 frame,set 1
+   Msg_421h.POST_OPERATION_WAKEUP=0;
+    */
+    
+   
+   Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;
+   Msg_432h.EBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_421h.POST_OPERATION_WAKEUP=0;
+   Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+   Msg_421h.PI_STATE_INFO_WAKEUP=0; 
+   Msg_432h.PRECOND_ELEC_WAKEUP=0;
+   Msg_432h.BCM_LONG_PARK_WAKEUP=1;
+   Msg_432h.BCM_PRK_COOLING_WAKEUP=0;
+    
+   Msg_211h.VCU_STATE_COMMAND=0x0;// precondition
+  /*
+000: No Command
+001: DISCHARGE
+010: CHARGE
+011: PRE-HEAT
+100: Reserve
+101: Ready
+110: HVBAT Precondition
+111: Invalid
+  */
+
+   Msg_211h.VCU_HVBAT_CONTACTOR_OPEN_REQUEST=0;//0- Not requested 1.-Requested
+   
+   Msg_241h.VCU_EMERGENCY_SHUTDOWN=0;//0: No emergency shutdown request 1: Emergency shutdown request
+   Msg_241h.VITESSE_VEHICULE_ROUES=0;//speed=0
+  
+  }
+ 
+  if(CounterB==260)
+  {
+
+  testcaseNum=0xff;
+  CounterB=0;
+  executing=0;
+  }
+  
+}
+
+void SleepCommand()
+{
+  //initial condition// 
+   Msg_432h.REVEIL_PRINCIPAL=1;
+  /* No main wake up request
+  00 : Invalid RCD
+  01 : No main wake up request
+  10 : Main wake up request
+  11 : Not valid*/
+   //Msg_432h.eBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+  
+  
+   Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;
+   Msg_432h.EBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_421h.POST_OPERATION_WAKEUP=0;
+   Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+   Msg_421h.PI_STATE_INFO_WAKEUP=0; 
+   Msg_432h.PRECOND_ELEC_WAKEUP=0;
+   Msg_432h.BCM_LONG_PARK_WAKEUP=0;
+   Msg_432h.BCM_PRK_COOLING_WAKEUP=0;
+  
+   Msg_211h.VCU_STATE_COMMAND=0;// No Command
+  /*
+000: No Command
+001: DISCHARGE
+010: CHARGE
+011: PRE-HEAT
+100: Reserve
+101: Ready
+110: HVBAT Precondition
+111: Invalid
+  */
+   Msg_211h.VCU_HVBAT_CONTACTOR_OPEN_REQUEST=0;//0- Not requested 1.-Requested
+   
+   Msg_241h.VCU_EMERGENCY_SHUTDOWN=0;//0: No emergency shutdown request 1: Emergency shutdown request
+   Msg_241h.VITESSE_VEHICULE_ROUES=0;//speed=0
+}
+
+void SetRcdhighlevel()
+{
+  MODbusCommandSet(0x04,0x01);
+}
+void SetRcdlowlevel()
+{
+  MODbusCommandSet(0x04,0x00);
+}
+
+void MODbusCommandSet(byte relayN,byte ONset)
+{
+  word crcSum;
+  byte m;
+  word k;
+  
+  Tframe[0]=0x01;
+  Tframe[1]=0x0f;
+  Tframe[2]=0x00;
+  Tframe[3]=0x00;
+  if(ONset==1)
+  {
+  if(relayN<8)
+  {
+  RelayS1=RelayS1|(0x01<<relayN);
+  Tframe[5]=RelayS1;
+  }
+  
+   if((relayN>=8)&&(relayN<10))
+  {
+  RelayS2=RelayS2|(0x01<<(relayN-8));
+  Tframe[4]=RelayS2;    
+  }
+  }
+  else
+  {
+    if(relayN<8)
+  {
+  RelayS1=RelayS1&(~(0x01<<relayN));
+  Tframe[5]=RelayS1;
+  }
+  
+   if((relayN>=8)&&(relayN<10))
+  {
+  RelayS2=RelayS2&(~(0x01<<(relayN-8)));
+  Tframe[4]=RelayS2;    
+  }
+  
+  }
+ 
+  crcSum=MODBUScrc16(Tframe,6);
+  Tframe[6]=crcSum>>8;
+  Tframe[7]=crcSum&0xff;
+  rs232Send(portN,Tframe,8);
+  
+   for(m=0;m<255;m++)
+       for(k=0;k<100;k++)
+        ;
+   
+  write("send out data:%x,%x", Tframe[6],Tframe[7]);
+  
+}
+
+word MODBUScrc16(byte puchMsg[], byte usDataLen) 
+{ 
+word  CRCSUM;
+word CRCSUMh;
+byte i,k,shiftBit,CRCSUMl;
+word DATAtemp;
+ CRCSUM=0xFFFF;
+for(i=0;i<usDataLen;i++)  
+{ 
+  CRCSUMh=CRCSUM&0xff00;
+  CRCSUMl=CRCSUM&0xff;
+  CRCSUMl=CRCSUMl^puchMsg[i];
+  CRCSUM=CRCSUMh|CRCSUMl;
+  for(k=0;k<8;k++)
+  {
+  shiftBit=CRCSUM&0x01;
+  CRCSUM=(CRCSUM>>0x01)&0x7FFF;
+  if(shiftBit==0x01) 
+    CRCSUM=CRCSUM^0xA001;
+  }
+
+}   
+ return CRCSUM;
+
+}
+
+void PowerOFF()
+{
+  MODbusCommandSet(0x01,0x00); 
+}
+
+void PowerON()
+{
+  MODbusCommandSet(0x01,0x01);
+  
+  //MODbusMultiCommandSet(0x07);
+}
+
+void autoclearDTC40WUC()
+{
+  
+   if(CounterB==1)
+    {
+   //initial condition// 
+   Msg_432h.REVEIL_PRINCIPAL=2;
+  /* No main wake up request
+  00 : Invalid RCD
+  01 : No main wake up request
+  10 : Main wake up request
+  11 : Not valid*/
+   Msg_432h.PRECOND_ELEC_WAKEUP=0;//no wakeup
+   Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+   //Msg_432h.eBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.EBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.BCM_LONG_PARK_WAKEUP=0;
+  
+   Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;
+   Msg_421h.PI_STATE_INFO_WAKEUP=0;
+   Msg_421h.POST_OPERATION_WAKEUP=0;
+   Msg_208h.DIAG_MUX_ON_PWT=0;
+  
+   //Msg_211h.VCU_STATE_COMMAND=5;// ready
+  /*
+000: No Command
+001: DISCHARGE
+010: CHARGE
+011: PRE-HEAT
+100: Reserve
+101: Ready
+110: HVBAT Precondition
+111: Invalid
+  */
+   Msg_211h.VCU_HVBAT_CONTACTOR_OPEN_REQUEST=1;//0- Not requested 1.-Requested
+   
+   Msg_241h.VCU_EMERGENCY_SHUTDOWN=0;//0: No emergency shutdown request 1: Emergency shutdown request
+   Msg_241h.VITESSE_VEHICULE_ROUES=0;//speed=0
+    }
+    
+   if(CounterB==3)
+    { 
+      PowerON();
+    }
+  
+    
+    if(CounterB==120)
+    {
+      SetRcdhighlevel();
+      Msg_211h.VCU_SYNCHRO_GPC=1;
+    }
+  
+
+    if(CounterB==385)
+    {
+     SleepCommand();
+     SetRcdlowlevel();
+     Msg_211h.VCU_SYNCHRO_GPC=0; 
+    }   
+    
+    if(CounterB==880)
+    { 
+      //PowerOFF();
+    }
+    
+    if(CounterB==950)
+     { 
+      CounterP=CounterP+1;
+      if(CounterP<41)
+         CounterB=0;
+      else 
+      {
+          CounterB=0;
+          CounterP=0;
+          testcaseNum=0xff;
+          executing=0;
+          write(" 40DC have finished now");     
+      }
+    
+     }
+  
+}
+void CheckSumCalculation(message *can_msg,byte index,byte Counter,byte CHKINI)
+{
+  
+  byte m;
+  byte len;
+  WORD DataTmp=0;
+  byte ChkSum=0;
+  byte constantD[8];
+  byte DataItem[16];
+  
+   for(m=0;m<8;m++)
+    constantD[m]=can_msg.byte(m);
+  
+   len=can_msg.dlc;
+  
+   constantD[index]=constantD[index]&0x00;
+   constantD[index]=(constantD[index]|Counter);
+  
+   for(m=0;m<len;m++)
+  {
+    can_msg.byte(m)=constantD[m];
+  }
+  
+  
+   for(m=0;m<len;m++)
+  {
+    DataItem[2*m]=constantD[m]&0xf;
+    DataItem[2*m+1]=(constantD[m]&0xf0)>>4;  
+  }
+  
+  DataTmp=0;
+  
+  for(m=0;m<2*len;m++)
+    DataTmp=DataTmp+DataItem[m];
+  
+  DataTmp=DataTmp+CHKINI;
+   
+  DataTmp=DataTmp&0x0f;
+  
+  ChkSum=0x0f-(byte)DataTmp;
+   
+  can_msg.byte(index)=can_msg.byte(index)|(ChkSum<<4); 
+  
+} 
+
+on sysvar sysvar::BYD400BMS::onstartbutton
+{
+   if(@sysvar::BYD400BMS::onstartbutton==1)
+  {
+    if(executing==0)
+    {
+    testcaseNum=@BYD400BMS::caseenum;
+      if(testcaseNum==0x0F)
+      {
+        testcaseNum=0xff;
+        Item=@BYD400BMS::faultitem;
+        trigerCase=Item;
+        inicondition=@BYD400BMS::SACitem;
+         tdelay=5;
+      }
+      write("1");
+    sleepEn=0;
+    CounterB=0; 
+    Counter1A=0;
+    strncpy(tResult,"Passed",elCount(tResult)); 
+    write("sac initial condition is %d",inicondition);
+    write("single test case is %d",trigerCase);
+    executing=1;
+    setControlColors(pName,ctrlName,makeRGB(255,255,255),makeRGB(0,255,0));
+    SetControlVisibility(pName, ctrlName, 0);
+    }
+  }
+  
+}
+
+on sysvar BYD400BMS::onstopbutton
+{
+  if(@BYD400BMS::onstopbutton==1)
+    sleepEn=1;
+}
+
+
+void DataIni()
+{
+  byte t,k;
+  testcaseNum=0xFF;
+  EventEnable=0;
+  EventEnableA=0;
+  EventEnableB=0;
+  CounterA=0;
+  Counter1A=0;
+  CounterB=0;
+  CounterC=0;
+  CounterD=0;
+  CounterE=0;
+  CounterF=0;
+  CounterG=0;
+  CounterH=0;
+  CounterI=0;
+  CounterK=0;
+  CounterTmp=0;
+  CounterEN=0;
+  CounterEN2=0;
+  sleepEn=0;
+  EnCLR=0;
+  FIUEn=0;
+  executing=0;
+  Rtwice=0;
+  trigerSend=1;
+  trigerCase=0;
+  SACN=0;
+  
+   
+  //initial condition// 
+   Msg_432h.REVEIL_PRINCIPAL=1;//no main wake up request
+   
+   Msg_432h.PRECOND_ELEC_WAKEUP=0;//no wakeup
+   Msg_432h.STOP_DELAYED_HMI_WAKEUP=0;
+   //Msg_432h.eBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.EBCM_INFO_REQUEST_PARTIAL_WAKEUP=0;
+   Msg_432h.BCM_LONG_PARK_WAKEUP=0;
+  
+   Msg_421h.HV_BATT_RECHARGE_WAKEUP=0;
+   Msg_421h.PI_STATE_INFO_WAKEUP=0;
+   Msg_421h.POST_OPERATION_WAKEUP=0;
+  
+   Msg_205h.HVBAT_STATE=0x03;
+   Msg_208h.VCU_MODE_EPS_REQUEST=0x0;
+   Msg_4A2h.OBC_PLUG_STATE=0x01;
+   Msg_241h.VVH_INDISP=0x01;
+   checksumEN=0;
+   checksumEN2=0;
+   checksumEN3=0;
+   checksumEN4=0;
+  
+   CounterEN=0;
+   CounterEN2=0;
+   CounterEN3=0;
+   CounterEN4=0;
+  
+   Msg_6B4h.dlc=8;
+  
+  /*
+000: No Command
+001: DISCHARGE
+010: CHARGE
+011: PRE-HEAT
+100: Reserve
+101: Ready
+110: HVBAT Precondition
+111: Invalid
+  */  
+   Msg_211h.VCU_STATE_COMMAND=0;// wait
+   ActiveAbsentMkup=0;
+   ActiveAbsentPWT=0;
+   ActiveAbsentSpeed=0;
+  
+    
+ /* 
+  000: No Command
+  001: DISCHARGE
+  010: CHARGE
+  011: PRE-HEAT
+  100: Reserve
+  101: Ready
+  110: Reserve
+  111: Invalid
+  */
+  
+   Msg_211h.VCU_HVBAT_CONTACTOR_OPEN_REQUEST=1;//0- Not requested 1.-Requested
+   
+   Msg_241h.VCU_EMERGENCY_SHUTDOWN=0;//0: No emergency shutdown request 1: Emergency shutdown request
+   Msg_241h.VITESSE_VEHICULE_ROUES=0;//speed=0
+  
+   Msg_351h.CRASH_AIRBAG=6;
+  
+   //JDD
+   Msg_552h.CPT_TEMPOREL=0x3E8;//100  0x3E8
+   Msg_552h.KILOMETRAGE=0x64;
+   Msg_552h.COMPTEUR_RAZ_GCT=5;
+  
+  
+//2023/10/9 ADD 
+//Debug CAN set 
+//BMS_Set1 0x3B0
+      Msg_3B0h.Set_ISO_ISOSwitchCtrl=0; //1
+      Msg_3B0h.Set_ISO_ISOSwitchCtrl2=0; //1
+      Msg_3B0h.Set_ISO_SwitchCtrlEn=2;//0
+      Msg_3B0h.Set_RLY_GPIO1DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIO2DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIO3DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIO4DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIO5DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIO6DrvCmd=0;
+      Msg_3B0h.Set_RLY_GPIOCtrlEn=0;
+      Msg_3B0h.Set_RLY_NegCtrlCmd=0;
+      Msg_3B0h.Set_RLY_PosCtrlCmd=0;
+      Msg_3B0h.Set_RLY_PreCtrlCmd=0;
+      Msg_3B0h.Set_RLY_DCNegCtrlCmd=0;
+      Msg_3B0h.Set_RLY_DCPosCtrlCmd=0;
+      Msg_3B0h.Set_RLY_RLYCtrlEn=0;
+      Msg_3B0h.Set_ClearDTC=2;//0=Disable 1=Enable 2=SNA
+      Msg_3B0h.Set_pack_resEn=1;//Enable
+      Msg_3B0h.Set_pack_res=0x3e8;//0x3e8
+      Msg_3B0h.Set_IsoStartEn=1;
+      Msg_3B0h.Set_ClearPosLifeCycle=0;
+      Msg_3B0h.Set_ClearPreLifeCycle=0;
+      Msg_3B0h.Set_ClearNegLifeCycle=0;
+      Msg_3B0h.Set_ClearDCPosLifeCycle=0;
+      Msg_3B0h.Set_ClearDCNegLifeCycle=0;
+      Msg_3B0h.Set_SleepCmdEn=0;
+      Msg_3B0h.Set_SleepCmd=0;
+//BMS_Set2 0x3B1
+      Msg_3B1h.SetSOCIndex=0xFF;
+      Msg_3B1h.SetSOCEn=1;
+      Msg_3B1h.SetSOC=0x03D4;//0x03D4
+      Msg_3B1h.SetSOCHIndex=0xFF;
+      Msg_3B1h.SetSOHCEn=1;
+      Msg_3B1h.SetSOHC=0x03D4;
+//BMS_Set6 0x3B5
+      Msg_3B5h.Set_HallCurrEn=1;
+      Msg_3B5h.Set_HallCurr=0x3AA2;
+      Msg_3B5h.Set_CSMCurrEn=1;
+      Msg_3B5h.Set_CSMCurr=0x3AA2;//0x3A98
+//BMS_Set7 0x3B6
+      Msg_3B6h.Set_CellVoltIndex=0xFF;
+      Msg_3B6h.Set_CellVoltEn=1;
+      Msg_3B6h.Set_CellVolt=0xDEF;//3.6V
+      Msg_3B6h.Set_CellTempIndex=0xFF;//0xFF
+      Msg_3B6h.Set_CellTempEn=1;
+      Msg_3B6h.Set_CellTemp=0x2EE;//0x2EE
+//BMS_Set8 0x3B7
+      Msg_3B7h.Set_HVSU_VoltPack=0xE74;
+      //Msg_3B7h.Set_HVSU_VLink=0xE74;
+      Msg_3B7h.Set_HVSU_MainFuseVolt=0xE74;
+      //Msg_3B7h.Set_HVSU_VDCLink=0xE74;//0xE74
+//BMS_Set9 0x3B8
+      Msg_3B8h.Set_HVSU_VLinkNeg=0x15;//2.1V
+      Msg_3B8h.Set_HVSU_VDCLinkNeg=0x15;//2.1V
+      Msg_3B8h.Set_HVSU_VoltPackEn=1;
+      //Msg_3B8h.Set_HVSU_VLinkEn=1;
+      //Msg_3B8h.Set_HVSU_MainFuseVoltEn=1;
+      //Msg_3B8h.Set_HVSU_VDCLinkEn=1;
+      Msg_3B8h.Set_HVSU_VLinkNegEn=1;
+      Msg_3B8h.Set_HVSU_VDCLinkNegEn=1;
+      //Msg_3B8h.Set_Eservice_VoltEn=1;
+      //Msg_3B8h.Set_RCDVoltEn=1;
+      //Msg_3B8h.Set_KL30VoltEn=1;
+      //Msg_3B8h.Set_ISOMesVoltEn=0;
+      //Msg_3B8h.Set_VoltFactorEn=0;
+      //Msg_3B8h.Set_VoltFactor=0;
+//BMS_Set10 0x3B9
+      Msg_3B9h.Set_Eservice_Volt=0x3000;
+      Msg_3B9h.Set_RCDVolt=0x3000;
+      Msg_3B9h.Set_KL30Volt=0x3000;
+      Msg_3B9h.Set_ISOMesVolt=0x3000;
+//BMS_Set12 0x3C2
+      Msg_3BBh.Set_DSOCEn=1; 
+//BMS_Set17 0x3C2
+      Msg_3C2h.Set_DSOC=0x320;
+
+  
+  
+   for (t=0;t<8;t++)
+   {
+     Rdata[t]=0x00;
+     DIDresData[t]=0x00;
+    
+  }
+  
+   /*for (t=0;t<8;t++)
+   {
+     Msg_5D1h.byte(t)=0x0;  //0x33
+     Msg_5F1h.byte(t)=0x0;  //0x34
+   }*/
+ 
+   for (k=0;k<200;k++)
+   {
+    t_DIDMtrix[k].passCheck=0;
+     for(t=0;t<8;t++)
+    {
+        t_DIDMtrix[k].respsendData[2*t]=0xA5;
+        t_DIDMtrix[k].respsendData[2*t+1]=0xA5;
+    }
+
+    t_DIDMtrix[k].DIDindex=0x0000;
+    for(t=0;t<4;t++)
+    {
+      t_DIDMtrix[k].writeData[2*t]=0x16;
+      t_DIDMtrix[k].writeData[t*2+1]=0x27;
+    }
+  }
+  
+   EnMsg=0;
+
+}
+
+void Rs232initial()
+{
+  if(1== rs232Open(portN))
+     if(0!=RS232Configure(portN,9600,8,1,0))
+      write("configure successfully at port 7!");//8 BYTES fifo 
+   RelayResetALL(); 
+}
+
+void RelayResetALL()
+{
+  word crcSum;
+  byte m;
+  word k;
+  
+  Tframe[0]=0x01;
+  Tframe[1]=0x0f;
+  Tframe[2]=0x00;
+  Tframe[3]=0x00;
+  Tframe[4]=00;
+  Tframe[5]=00;
+  
+  crcSum=MODBUScrc16(Tframe,6);
+  Tframe[7]=crcSum>>8;
+  Tframe[6]=crcSum&0xff;
+  rs232Send(portN,Tframe,8);
+  
+   for(m=0;m<255;m++)
+       for(k=0;k<100;k++)
+        ;
+   
+  write("send out data:%x,%x", Tframe[6],Tframe[7]);
+ 
+}
+
+void startlogfunction()
+{
+  char logfileN[200]="canlog_M{IncMeasurement}.asc";
+  char postfix[32]="{IncMeasurement}";
+  char prefix[200]="C:\\Users\\SD09082\\Desktop\\BYD-400BMS\\";
+  strncat(prefix,logfileN,200);
+  setLogFileName(prefix);
+  startLogging();
+}
+
+void pushinmsg(message *msg,byte BuffData[])
+{
+  byte i;
+  msg.dlc=BuffData[0]+1; 
+  for(i=0;i<msg.dlc;i++)
+    msg.byte(i)=BuffData[i];
+
+}
+
+void CheckSumCalculation2(message *can_msg,byte CPindex,byte MSBc, byte CHKindex,byte MSBk,byte Counter,byte CHKINI)
+{
+  
+  byte m;
+  byte len;
+  WORD DataTmp=0;
+  byte ChkSum=0;
+  byte constantD[8];
+  byte DataItem[16];
+  
+   for(m=0;m<8;m++)
+    constantD[m]=can_msg.byte(m);
+  
+   len=can_msg.dlc;
+   if(MSBc==0)
+  {
+   constantD[CPindex]=constantD[CPindex]&0xF0;
+   constantD[CPindex]=(constantD[CPindex]|Counter);
+  
+  }
+   else
+  {
+    constantD[CPindex]=constantD[CPindex]&0x0F;
+    constantD[CPindex]=(constantD[CPindex]|(Counter<<4));
+    
+  }
+  
+   if(MSBk==0)
+   constantD[CHKindex]=constantD[CHKindex]&0xF0;
+   else
+    constantD[CHKindex]=constantD[CHKindex]&0x0F;
+
+   for(m=0;m<len;m++)
+  {
+    can_msg.byte(m)=constantD[m];
+  }
+  
+  
+   for(m=0;m<len;m++)
+  {
+    DataItem[2*m]=constantD[m]&0xf;
+    DataItem[2*m+1]=(constantD[m]&0xf0)>>4;  
+  }
+  
+  DataTmp=0;
+  
+  for(m=0;m<2*len;m++)
+    DataTmp=DataTmp+DataItem[m];
+  
+  DataTmp=DataTmp+CHKINI;
+   
+  DataTmp=DataTmp&0x0f;
+  
+  ChkSum=0x0f-(byte)DataTmp;
+  
+  if(MSBk==0)
+  can_msg.byte(CHKindex)=can_msg.byte(CHKindex)|(ChkSum); 
+  else
+  can_msg.byte(CHKindex)=can_msg.byte(CHKindex)|(ChkSum<<4);   
+  
+} 
+
+
+void CheckSumCalculation4(message *can_msg,byte CPindex,byte MSBc, byte CHKindex,byte MSBk,byte Counter,byte CHKINI,byte Enable)
+{
+  
+  byte m;
+  byte len;
+  WORD DataTmp=0;
+  byte ChkSum=0;
+  byte constantD[8];
+  byte DataItem[16];
+  
+   for(m=0;m<8;m++)
+    constantD[m]=can_msg.byte(m);
+  
+   len=can_msg.dlc;
+   if(MSBc==0)
+  {
+   constantD[CPindex]=constantD[CPindex]&0xF0;
+   constantD[CPindex]=(constantD[CPindex]|Counter);
+  
+  }
+   else
+  {
+    constantD[CPindex]=constantD[CPindex]&0x0F;
+    constantD[CPindex]=(constantD[CPindex]|(Counter<<4));
+    
+  }
+  
+   if(MSBk==0)
+   constantD[CHKindex]=constantD[CHKindex]&0xF0;
+   else
+    constantD[CHKindex]=constantD[CHKindex]&0x0F;
+
+   for(m=0;m<len;m++)
+  {
+    can_msg.byte(m)=constantD[m];
+  }
+  
+  
+   for(m=0;m<len;m++)
+  {
+    DataItem[2*m]=constantD[m]&0xf;
+    DataItem[2*m+1]=(constantD[m]&0xf0)>>4;  
+  }
+  
+  DataTmp=0;
+  
+  for(m=0;m<2*len;m++)
+    DataTmp=DataTmp+DataItem[m];
+  
+  DataTmp=DataTmp+CHKINI;
+   
+  DataTmp=DataTmp&0x0f;
+  
+  ChkSum=0x0f-(byte)DataTmp;
+  
+  if(Enable==1)
+  {
+  if(MSBk==0)
+  can_msg.byte(CHKindex)=can_msg.byte(CHKindex)|(ChkSum); 
+  else
+  can_msg.byte(CHKindex)=can_msg.byte(CHKindex)|(ChkSum<<4);   
+  }
+ 
+  
+} 

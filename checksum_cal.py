@@ -10,7 +10,7 @@ if __name__ == "__main__":
             if remainder == 15:
                 print(f"checksum计算正确,余数为{remainder}\n")
             else:
-                print(f"checksum计算错误,余数为{remainder}（不为15）")
+                print(f"checksum计算错误,余数为{remainder}(不为15)")
                 break  
         except ValueError:
             print("输入错误，请输入有效的十进制整数\n")
